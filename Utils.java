@@ -59,23 +59,22 @@ public class Utils {
 		DatabaseContract.UNIQUE_ID,
 		DatabaseContract.TableValues.COL5,
 	};
-    public static final Map<String, String> currSymbol;
-    static
-    {
-        currSymbol = new HashMap<String, String>();
+    	public static final Map<String, String> currSymbol;
+    	static
+    	{
+        	currSymbol = new HashMap<String, String>();
 		currSymbol.put("USD","$");
 		currSymbol.put("INR","`");
 		currSymbol.put("EUR",Currency.getInstance("EUR").getSymbol());
 		currSymbol.put("CNY",Currency.getInstance(Locale.JAPAN).getSymbol());
 		currSymbol.put("JPY",Currency.getInstance(Locale.JAPAN).getSymbol());
-    };
+    	};
     
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-
 	}
 
 	private int getJSONValue(String jsonString, String key) throws JSONException{
@@ -156,60 +155,56 @@ public class Utils {
 	
 	public static String apiCall(String apiUrl) throws URISyntaxException{
 		String result = null;
-        // Making HTTP Request
-        try {
-        	System.out.println(apiUrl);
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpGet request = new HttpGet();
-            URI website = new URI(apiUrl);
-            request.setURI(website);
+        	// Making HTTP Request
+        	try {
+        		System.out.println(apiUrl);
+            		HttpClient httpclient = new DefaultHttpClient();
+            		HttpGet request = new HttpGet();
+            		URI website = new URI(apiUrl);
+            		request.setURI(website);
 
    
-            HttpResponse response = httpclient.execute(request);
+            		HttpResponse response = httpclient.execute(request);
 
-            HttpEntity responseEntity = response.getEntity();
-            if(responseEntity!=null) {
-                result = EntityUtils.toString(responseEntity);
-            }
-        
-           
-        } catch (Exception e) {
-        	e.printStackTrace();
-        }
-        return result;
+            		HttpEntity responseEntity = response.getEntity();
+            		if(responseEntity!=null) {
+                		result = EntityUtils.toString(responseEntity);
+            		}
+
+        	} catch (Exception e) {
+        		e.printStackTrace();
+        	}
+        	return result;
 	}
     
 	public static HashMap processXML(String response, String type) throws SAXException, ParserConfigurationException{
 		HashMap<String, Float> exchange = new HashMap<String, Float>();
 
-        if(type.equals("EXCHNG")){
-        	try {
-                InputSource is=new InputSource();
-                is.setCharacterStream(new StringReader(response));
-        		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        		DocumentBuilder dbs = dbf.newDocumentBuilder();
-        		Document doc = dbs.parse(is);  
-        		NodeList nodes = doc.getElementsByTagName("Cube");
+        	if(type.equals("EXCHNG")){
+        		try {
+                		InputSource is=new InputSource();
+                		is.setCharacterStream(new StringReader(response));
+        			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        			DocumentBuilder dbs = dbf.newDocumentBuilder();
+        			Document doc = dbs.parse(is);  
+        			NodeList nodes = doc.getElementsByTagName("Cube");
 
-        		for(int i=0; i<nodes.getLength(); i++){
-        			Node node = nodes.item(i);
-        			NamedNodeMap attrs = node.getAttributes();  
-    				if(attrs.getLength() == 2){
-    					exchange.put( ((Attr)attrs.item(0)).getValue(), Float.parseFloat( ((Attr)attrs.item(1)).getValue() ));
-
-        			}
-    			
+        			for(int i=0; i<nodes.getLength(); i++){
+        				Node node = nodes.item(i);
+        				NamedNodeMap attrs = node.getAttributes();  
+    					if(attrs.getLength() == 2){
+    						exchange.put( ((Attr)attrs.item(0)).getValue(), Float.parseFloat( ((Attr)attrs.item(1)).getValue() ));
+					}
+    	        		}
+        		} catch (ClientProtocolException e) {
+        			// writing exception to log
+        			e.printStackTrace();
+        		} catch (IOException e) {
+        			// writing exception to log
+        			e.printStackTrace();
         		}
- 
-        	} catch (ClientProtocolException e) {
-        		// writing exception to log
-        		e.printStackTrace();
-        	} catch (IOException e) {
-        		// writing exception to log
-        		e.printStackTrace();
         	}
-        }
-        return exchange;
+        	return exchange;
 	}
 	public static JSONObject processJSON(String response) throws JSONException{
 		return new JSONObject(response);
@@ -225,19 +220,16 @@ public class Utils {
 			}else if(newCurr.equals("EUR")){
 				newValue = value/exchange.get(oldCurr);
 			}else{
-				
 				newValue = value/exchange.get(oldCurr) * exchange.get(newCurr);
 			}
 			return formatCurrency(newValue);
 		}			
-
 	}
 	
 	public static String getDateTime() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(
-                "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        Date date = new Date();
-        return dateFormat.format(date);
+        	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        	Date date = new Date();
+        	return dateFormat.format(date);
 	}
 	
 	public static float formatCurrency(Float number){
@@ -249,49 +241,49 @@ public class Utils {
 		return Float.parseFloat(formatted);
 	}
 	
-	public static void updateCurrency(Context context, Map<String, String[]> newSetting, boolean isFromSetting) throws SAXException, ParserConfigurationException, URISyntaxException{
+	public static void updateCurrency(Context context, Map<String, String[]> newSetting, boolean isFromSetting)
+		throws SAXException, ParserConfigurationException, URISyntaxException{
 		HashMap exchange = null;
 		ContentResolver cResolver = context.getContentResolver();
-    	for (Map.Entry<String, String[]> entry : newSetting.entrySet()){
-    		   
-    		String coinId = entry.getKey();
-    		String[] values = entry.getValue();
-    		String oldCurr = values[0];
-    		String newCurr = values[1];
+    		for (Map.Entry<String, String[]> entry : newSetting.entrySet()){
+    			String coinId = entry.getKey();
+    			String[] values = entry.getValue();
+    			String oldCurr = values[0];
+    			String newCurr = values[1];
     		
-    		if(oldCurr.equals(newCurr)){
-    			continue;
-    		}
+    			if(oldCurr.equals(newCurr)){
+    				continue;
+    			}
 
-    		ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-    		NetworkInfo mWifi = connManager.getNetworkInfo(connManager.getNetworkPreference());
+    			ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+    			NetworkInfo mWifi = connManager.getNetworkInfo(connManager.getNetworkPreference());
 			
 			if (mWifi.isConnected()) {
-    			if(exchange == null){
-    				exchange = Utils.getCurrExchange(); }
+    				if(exchange == null){
+    					exchange = Utils.getCurrExchange(); }
     		
-    			float newTotal = 0;
-    			Cursor valueCursor = cResolver.query(MyContentProvider.VALUES_CONTENT_URI, VALUES_PROJECTION, 
-    				DatabaseContract.TableValues.COL1 + " = " + coinId, null, null);
+    				float newTotal = 0;
+    				Cursor valueCursor = cResolver.query(MyContentProvider.VALUES_CONTENT_URI, VALUES_PROJECTION, 
+    					DatabaseContract.TableValues.COL1 + " = " + coinId, null, null);
     		
-    			if(valueCursor.moveToFirst()){
-    				do {
-    					int valueId = valueCursor.getInt(0);
-    					float oldVal = valueCursor.getFloat(1);
-    					float newVal;
+    				if(valueCursor.moveToFirst()){
+    					do {
+    						int valueId = valueCursor.getInt(0);
+    						float oldVal = valueCursor.getFloat(1);
+    						float newVal;
 					
-    					try{
-    						newVal = Utils.convCurr(exchange, oldVal, oldCurr, newCurr );
-    					}
-    					catch(Exception e){
-    						continue;
-    					}
-    					newTotal += newVal;
-    					ContentValues valuesNew = new ContentValues();
-    					valuesNew.put(DatabaseContract.TableValues.COL4, newCurr);
-    					valuesNew.put(DatabaseContract.TableValues.COL5, newVal);
-    					valuesNew.put(DatabaseContract.TableValues.COL7, Utils.getDateTime());
-    					cResolver.update(Uri.withAppendedPath(MyContentProvider.VALUES_CONTENT_URI,
+    						try{
+    							newVal = Utils.convCurr(exchange, oldVal, oldCurr, newCurr );
+    						}
+    						catch(Exception e){
+    							continue;
+    						}
+    						newTotal += newVal;
+    						ContentValues valuesNew = new ContentValues();
+    						valuesNew.put(DatabaseContract.TableValues.COL4, newCurr);
+    						valuesNew.put(DatabaseContract.TableValues.COL5, newVal);
+    						valuesNew.put(DatabaseContract.TableValues.COL7, Utils.getDateTime());
+    						cResolver.update(Uri.withAppendedPath(MyContentProvider.VALUES_CONTENT_URI,
 							String.valueOf(valueId)), valuesNew, null,null);
 
 					} while (valueCursor.moveToNext());
@@ -310,14 +302,14 @@ public class Utils {
 				coinNew.put(DatabaseContract.TableCoin.COL7, newCurr);
 				cResolver.update(Uri.withAppendedPath(MyContentProvider.COINS_CONTENT_URI,
 					String.valueOf(coinId)), coinNew, null,null);
-    		}else if(isFromSetting){
+    			}else if(isFromSetting){
 				ContentValues coinNew = new ContentValues();
 				coinNew.put(DatabaseContract.TableCoin.COL7, newCurr);				
 				cResolver.update(Uri.withAppendedPath(MyContentProvider.COINS_CONTENT_URI,
 						String.valueOf(coinId)), coinNew, null,null);   			
-    		}
+    			}
 	
-    	}
+    		}
 
 	}
 
