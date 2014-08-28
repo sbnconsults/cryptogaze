@@ -60,7 +60,6 @@ public class ValueUpdaterTask implements Runnable {
 		this.elv = elv;
 		this.mAdapter = mAdapter;
 
-
 		cResolver = this.context.getContentResolver();
 	}
 
@@ -92,7 +91,7 @@ public class ValueUpdaterTask implements Runnable {
 					continue;
 				}
 				Cursor valueCursor = cResolver.query(MyContentProvider.VALUES_CONTENT_URI, VALUES_PROJECTION, 
-						DatabaseContract.TableValues.COL1 + " = " + String.valueOf(coinId), null, null);
+					DatabaseContract.TableValues.COL1 + " = " + String.valueOf(coinId), null, null);
 				
 				HashMap exchange;
 				try{
@@ -109,12 +108,12 @@ public class ValueUpdaterTask implements Runnable {
 						float sourceOldVal = valueCursor.getFloat(3);
 						float newVal;
 						try{
-						newVal = Utils.getNewValue(api,source,ticker);
-						if(!coinCurr.equals("USD")){
-							newVal = Utils.convCurr(exchange, newVal, "USD", coinCurr );
-						}else{
-							newVal = Utils.formatCurrency(newVal);
-						}
+							newVal = Utils.getNewValue(api,source,ticker);
+							if(!coinCurr.equals("USD")){
+								newVal = Utils.convCurr(exchange, newVal, "USD", coinCurr );
+							}else{
+								newVal = Utils.formatCurrency(newVal);
+							}
 						}catch(Exception e){
 							Log.e("UPDATE","Error updating value "+api);
 							continue;
@@ -154,10 +153,10 @@ public class ValueUpdaterTask implements Runnable {
 		
 		FragmentActivity act = (FragmentActivity) context;
 		act.runOnUiThread(new Runnable() {
-		     @Override
-		     public void run() {
+			@Override
+		   	public void run() {
 		    		mAdapter.getCursor().requery();
-		     }
+		     	}
 		});
 	}
 
